@@ -98,14 +98,36 @@ module Hanoi =
         let printPeg (pegName : string) (pegContents : Disk list) =
             let rec printStack (pegContents : Disk list) =
                 match pegContents with
-                | [] -> ()
+                | [] -> printf "\n"
                 | hd :: tl -> (printf "%d " hd.Width); printStack tl
             (printf "%s: " pegName); printStack pegContents
+        printfn "-----------------------------"
         printPeg "L" board.LeftPeg
         printPeg "M" board.MiddlePeg
         printPeg "R" board.RightPeg
+        printfn "-----------------------------"
+
+    let gameTurn (board : Board) =
+        ResultMonad () {
+            let! input = getPlayerTurn ()
+            let! newBoard = playTurn board input
+            printBoard newBoard
+            return newBoard
+        }
+
+    let startGame () =
+        let rec play (board : Board) =
+            let newBoard = gameTurn board
+            match newBoard with
+            | Failure f -> printfn "%s" f; play board
+            | Success b -> 
+                match b with
+                | _ when (gameWon b) ->
+                    printfn "CONGRATULATIONS"
+                | _ -> play b
+        play initialBoard
 
 [<EntryPoint>]
 let main argv =
-    printfn "%A" argv
+    Hanoi.startGame ()
     0 // return an integer exit code
