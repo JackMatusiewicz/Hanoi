@@ -46,18 +46,18 @@ module Hanoi =
             | Left ->
                 match board.LeftPeg with
                     | hd :: _ when hd.Width < item.Width ->
-                        Failure "Can't put a disk with a larger width ontop of a smaller one"
-                    | _ -> Success {board with LeftPeg = item::board.MiddlePeg}
+                        Failure "Can't put a large disk ontop of a smaller one"
+                    | _ -> Success {board with LeftPeg = item::board.LeftPeg}
             | Middle ->
                 match board.MiddlePeg with
                     | hd :: _ when hd.Width < item.Width ->
-                        Failure "Can't put a disk with a larger width ontop of a smaller one"
+                        Failure "Can't put a large disk ontop of a smaller one"
                     | _ -> Success {board with MiddlePeg = item::board.MiddlePeg}
             | Right ->
                 match board.RightPeg with
                     | hd :: _ when hd.Width < item.Width ->
-                        Failure "Can't put a disk with a larger width ontop of a smaller one"
-                    | _ -> Success {board with RightPeg = item::board.MiddlePeg}
+                        Failure "Can't put a large disk ontop of a smaller one"
+                    | _ -> Success {board with RightPeg = item::board.RightPeg}
 
         match playerChoice.Pop with
         | Left ->
@@ -90,8 +90,7 @@ module Hanoi =
         let push = Console.ReadLine()
 
         match (convertToTurn pop),(convertToTurn push) with
-        | (Some pop), (Some push) ->
-            Success {Pop = pop; Push = push}
+        | (Some pop), (Some push) -> Success {Pop = pop; Push = push}
         | _ -> Failure "Invalid input! Must be Left, Middle or Right"
     
     let printBoard (board : Board) =
